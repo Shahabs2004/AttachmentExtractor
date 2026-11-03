@@ -116,7 +116,7 @@
 ### گزینه ۲: ساخت از سورس
 
 ```powershell
-git clone https://github.com/YOUR-USERNAME/AttachmentExtractor.git
+git clone https://github.com/Shahabs2004/AttachmentExtractor.git
 cd AttachmentExtractor
 dotnet build AttachmentExtractor.slnx -c Release
 dotnet run --project src/AttachmentExtractor.App -c Release
