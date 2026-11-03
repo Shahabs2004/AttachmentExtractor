@@ -1,0 +1,23 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+publish/
+artifacts/
+_export-test/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+
+# JetBrains Rider
+.idea/
+
+# Test output
+TestResults/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -1,0 +1,47 @@
+<Window x:Class="AttachmentExtractor.App.Views.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ورود مقدار"
+        Width="470"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="{StaticResource AppBackgroundBrush}"
+        FlowDirection="RightToLeft"
+        FontFamily="Segoe UI"
+        FontSize="13">
+    <Border Style="{StaticResource Card}" Margin="16">
+        <StackPanel>
+            <TextBlock x:Name="HeaderText"
+                       Style="{StaticResource SectionTitle}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,12" />
+
+            <TextBox x:Name="InputBox"
+                     Style="{StaticResource ModernTextBox}"
+                     TextChanged="InputBox_TextChanged" />
+
+            <TextBlock Text="برای تأیید، نام پروفایل نمی‌تواند خالی باشد."
+                       Style="{StaticResource Caption}"
+                       Margin="0,8,0,0" />
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        Margin="0,20,0,0">
+                <Button Content="تأیید"
+                        x:Name="OkButton"
+                        Style="{StaticResource PrimaryButton}"
+                        Width="110"
+                        Click="Ok_Click"
+                        IsDefault="True" />
+                <Button Content="انصراف"
+                        Style="{StaticResource SecondaryButton}"
+                        Width="110"
+                        Margin="8,0,0,0"
+                        Click="Cancel_Click"
+                        IsCancel="True" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

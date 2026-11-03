@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\AttachmentExtractor.Core\AttachmentExtractor.Core.csproj" />
+    <ProjectReference Include="..\AttachmentExtractor.Outlook\AttachmentExtractor.Outlook.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>AttachmentExtractor</AssemblyName>
+    <RootNamespace>AttachmentExtractor.App</RootNamespace>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AttachmentExtractor.App/AttachmentExtractor.App.csproj" />
+    <Project Path="src/AttachmentExtractor.Core/AttachmentExtractor.Core.csproj" />
+    <Project Path="src/AttachmentExtractor.Outlook/AttachmentExtractor.Outlook.csproj" />
+  </Folder>
+</Solution>
