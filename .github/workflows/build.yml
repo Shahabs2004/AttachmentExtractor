@@ -41,7 +41,7 @@ jobs:
       - name: Build
         run: dotnet build AttachmentExtractor.slnx --configuration Release --no-restore
 
-      - name: Publish self-contained single-file (win-x64)
+      - name: Publish portable (self-contained, single file)
         run: >
           dotnet publish src/AttachmentExtractor.App/AttachmentExtractor.App.csproj
           --configuration Release
@@ -50,13 +50,31 @@ jobs:
           -p:PublishSingleFile=true
           -p:IncludeNativeLibrariesForSelfExtract=true
           -p:DebugType=embedded
-          --output publish/win-x64
+          --output publish/portable
+
+      - name: Publish light (framework-dependent, single file)
+        run: >
+          dotnet publish src/AttachmentExtractor.App/AttachmentExtractor.App.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained false
+          -p:PublishSingleFile=true
+          -p:DebugType=embedded
+          --output publish/light
 
       - name: Upload portable artifact
         uses: actions/upload-artifact@v7
         with:
-          name: AttachmentExtractor-win-x64
-          path: publish/win-x64
+          name: AttachmentExtractor-win-x64-portable
+          path: publish/portable
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload light artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: AttachmentExtractor-win-x64-light
+          path: publish/light
           if-no-files-found: error
           retention-days: 14
 
@@ -69,23 +87,35 @@ jobs:
       contents: write
 
     steps:
-      - name: Download artifact
+      - name: Download portable artifact
         uses: actions/download-artifact@v8
         with:
-          name: AttachmentExtractor-win-x64
-          path: dist
+          name: AttachmentExtractor-win-x64-portable
+          path: dist/portable
 
-      - name: Create release archive
+      - name: Download light artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: AttachmentExtractor-win-x64-light
+          path: dist/light
+
+      - name: Create release archives
         shell: pwsh
-        run: >
-          Compress-Archive
-          -Path 'dist/*'
-          -DestinationPath "AttachmentExtractor-${{ github.ref_name }}-win-x64.zip"
+        run: |
+          Compress-Archive -Path 'dist/portable/*' -DestinationPath "AttachmentExtractor-${{ github.ref_name }}-win-x64-portable.zip"
+          Compress-Archive -Path 'dist/light/*' -DestinationPath "AttachmentExtractor-${{ github.ref_name }}-win-x64-light.zip"
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           name: ${{ github.ref_name }}
-          files: AttachmentExtractor-${{ github.ref_name }}-win-x64.zip
+          files: |
+            AttachmentExtractor-${{ github.ref_name }}-win-x64-portable.zip
+            AttachmentExtractor-${{ github.ref_name }}-win-x64-light.zip
           generate_release_notes: true
+          append_body: |
+            ## فایل‌های انتشار
+
+            - `AttachmentExtractor-${{ github.ref_name }}-win-x64-portable.zip` — نسخه پرتابل و خودکفا؛ نیازی به نصب .NET ندارد.
+            - `AttachmentExtractor-${{ github.ref_name }}-win-x64-light.zip` — نسخه سبک؛ نیازمند **.NET Desktop Runtime 10 (x64)** است.
           prerelease: ${{ contains(github.ref_name, '-') }}

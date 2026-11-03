@@ -13,6 +13,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>AttachmentExtractor</AssemblyName>
     <RootNamespace>AttachmentExtractor.App</RootNamespace>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
 </Project>

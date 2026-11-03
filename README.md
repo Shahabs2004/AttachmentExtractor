@@ -98,7 +98,7 @@
 |---|---|
 | سیستم‌عامل | Windows 10 (نسخه ۲۱H۲ به بعد) یا Windows 11 — ۶۴ بیتی |
 | ایمیل | **Outlook دسکتاپ کلاسیک** نصب و پروفایل آن یک‌بار باز شده باشد |
-| .NET | برای نسخه آمادهٔ تک‌فایلی **نیازی به نصب .NET نیست**؛ برای ساخت از سورس به **.NET SDK 10** نیاز است |
+| .NET | نسخه **پرتابل** بدون نیاز به نصب .NET؛ نسخه **سبک** نیازمند **.NET Desktop Runtime 10 (x64)**؛ ساخت از سورس نیازمند **.NET SDK 10** |
 | Outlook جدید | ❌ نسخه «New Outlook» و Outlook وب پشتیبانی نمی‌شوند (COM ندارند) |
 
 > برنامه را با همان کاربری اجرا کنید که Outlook با آن تنظیم شده است. اگر Outlook در حال اجرا باشد، اتصال سریع‌تر برقرار می‌شود؛ در غیر این صورت برنامه نمونه‌ای از Outlook را بدون نمایش پنجره راه‌اندازی می‌کند.
@@ -107,9 +107,16 @@
 
 ## دریافت و اجرا
 
-### گزینه ۱: نسخه آماده
+### گزینه ۱: دانلود نسخه آماده
 
-از بخش **Releases** مخزن، فایل `AttachmentExtractor-vX.Y.Z-win-x64.zip` را دانلود، استخراج و فایل `AttachmentExtractor.exe` را اجرا کنید. برنامه **portable** است و نصب‌کننده نمی‌خواهد.
+از بخش **Releases** دو نسخه موجود است:
+
+| نسخه | فایل | حجم تقریبی | پیش‌نیاز |
+|---|---|---|---|
+| پرتابل (خودکفا) | `AttachmentExtractor-vX.Y.Z-win-x64-portable.zip` | ~۶۱ مگابایت | هیچ؛ فقط استخراج و اجرا |
+| سبک | `AttachmentExtractor-vX.Y.Z-win-x64-light.zip` | ~۰٫۵ مگابایت | نصب [.NET Desktop Runtime 10 (x64)](https://dotnet.microsoft.com/download/dotnet/10.0) |
+
+پس از استخراج، فایل `AttachmentExtractor.exe` را اجرا کنید. هر دو نسخه portable هستند و نصب‌کننده نمی‌خواهند.
 
 > فایل اجرایی امضای دیجیتال ندارد؛ ویندوز ممکن است پیام SmartScreen نمایش دهد. با «More info → Run anyway» ادامه دهید.
 
@@ -122,19 +129,24 @@ dotnet build AttachmentExtractor.slnx -c Release
 dotnet run --project src/AttachmentExtractor.App -c Release
 ```
 
-### گزینه ۳: انتشار تک‌فایلی خودکفا
+### گزینه ۳: انتشار دستی (دو حالت)
 
 ```powershell
+# نسخه پرتابل خودکفا (بدون نیاز به نصب .NET)
 dotnet publish src/AttachmentExtractor.App/AttachmentExtractor.App.csproj `
-  -c Release `
-  -r win-x64 `
-  --self-contained true `
+  -c Release -r win-x64 --self-contained true `
   -p:PublishSingleFile=true `
   -p:IncludeNativeLibrariesForSelfExtract=true `
-  -o publish/win-x64
+  -o publish/portable
+
+# نسخه سبک (نیازمند .NET Desktop Runtime 10)
+dotnet publish src/AttachmentExtractor.App/AttachmentExtractor.App.csproj `
+  -c Release -r win-x64 --self-contained false `
+  -p:PublishSingleFile=true `
+  -o publish/light
 ```
 
-خروجی در پوشه `publish/win-x64` قرار می‌گیرد. (همین دستور در ورک‌فلوی GitHub Actions نیز اجرا می‌شود.)
+خروجی‌ها در پوشه‌های `publish/portable` و `publish/light` قرار می‌گیرند. (همین دستورها در ورک‌فلوی GitHub Actions نیز اجرا می‌شوند.)
 
 ---
 
@@ -398,12 +410,12 @@ AttachmentExtractor.slnx
 1. **ساخت در هر Push/Pull Request** به شاخه‌های `main` یا `master` و اجرای دستی:
    - نصب .NET SDK 10
    - Restore و Build کل Solution در حالت Release
-   - Publish خودکفا و تک‌فایلی برای `win-x64`
-   - بارگذاری خروجی به‌عنوان Artifact با نام `AttachmentExtractor-win-x64` (قابل دانلود از تب Actions)
-2. **انتشار نسخه در هر Tag** مانند `v1.0.0`:
-   - ساخت همان خروجی
-   - ساخت فایل ZIP
-   - ایجاد **GitHub Release** با نام تگ و پیوست فایل اجرایی و یادداشت‌های خودکار
+   - Publish دو نسخه برای `win-x64`: **پرتابل خودکفا** و **سبک وابسته به .NET**
+   - بارگذاری دو Artifact با نام‌های `AttachmentExtractor-win-x64-portable` و `AttachmentExtractor-win-x64-light` (قابل دانلود از تب Actions)
+2. **انتشار نسخه در هر Tag** مانند `v1.1.0`:
+   - ساخت همان دو خروجی
+   - ساخت دو فایل ZIP (پرتابل و سبک)
+   - ایجاد **GitHub Release** با نام تگ، هر دو فایل اجرایی و یادداشت‌های خودکار
 
 انتشار نسخه جدید:
 
@@ -432,7 +444,7 @@ git push origin v1.0.0
 
 ## محدوده نسخه فعلی و نقشه راه
 
-نسخه ۱٫۰ بر اسکن، فیلتر حرفه‌ای، انتخاب و خروجی متمرکز است. موارد زیر آگاهانه به نسخه‌های بعدی موکول شده‌اند:
+نسخه ۱٫۱ بر اسکن، فیلتر حرفه‌ای، انتخاب و خروجی متمرکز است. موارد زیر آگاهانه به نسخه‌های بعدی موکول شده‌اند:
 
 - حذف تکراری‌ها با SHA-256 و خروجی افزایشی/همگام‌سازی
 - ایندکس SQLite برای صندوق‌های بسیار بزرگ

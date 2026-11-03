@@ -195,7 +195,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public RelayCommand ClearLogsCommand { get; private set; } = null!;
 
-    public string Version => "نسخه ۱٫۰";
+    public string Version => "نسخه ۱٫۱";
 
     public bool IsConnected
     {
